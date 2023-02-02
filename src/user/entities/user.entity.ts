@@ -1,10 +1,13 @@
-class UserEntity {
+class UserResponse {
   id: string;
   login: string;
-  password: string;
   version: number;
   createdAt: number;
   updatedAt: number;
 }
 
-export { UserEntity };
+class UserEntity extends UserResponse {
+  password: string;
+}
+
+export { UserResponse, UserEntity };

@@ -8,10 +8,9 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { UserEntity } from './entities/user.entity';
+import { UserResponse } from './entities/user.entity';
 import { UserService } from './user.service';
 import { validateID } from '../utils/validate';
-import { UserResponse } from './interfaces/user.model';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 

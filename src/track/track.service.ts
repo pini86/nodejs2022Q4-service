@@ -46,4 +46,12 @@ export class TrackService {
 
     return;
   }
+
+  removeArtist(id: string) {
+    this.dataBase.tracks.forEach((track) => {
+      if (track.artistId === id) {
+        track.artistId = null;
+      }
+    });
+  }
 }
