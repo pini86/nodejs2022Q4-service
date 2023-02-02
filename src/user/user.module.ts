@@ -1,10 +1,11 @@
-interface IUser {
-  id: string;
-  login: string;
-  password: string;
-  version: number;
-  createdAt: number;
-  updatedAt: number;
-}
+import { Module } from '@nestjs/common';
+import { UserService } from './user.service';
+import { UserController } from './user.controller';
+import { DBModule } from '../db/db.module';
 
-export { IUser };
+@Module({
+  imports: [DBModule],
+  controllers: [UserController],
+  providers: [UserService],
+})
+export class UserModule {}

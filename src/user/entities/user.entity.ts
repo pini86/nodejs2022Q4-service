@@ -1,4 +1,4 @@
-interface User {
+class UserEntity {
   id: string;
   login: string;
   password: string;
@@ -7,6 +7,4 @@ interface User {
   updatedAt: number;
 }
 
-type UserResponse = Omit<User, 'password'>;
-
-export { User, UserResponse };
+export { UserEntity };

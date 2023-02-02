@@ -5,11 +5,15 @@ import { join } from 'path';
 import { AppModule } from './app.module';
 import 'dotenv/config';
 import { parse } from 'yaml';
+import { ValidationPipe } from '@nestjs/common';
 
 const PORT = process.env.PORT || 4000;
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
+
   const apiSchema = await readFile(
     join(__dirname, '..', 'doc/api.yaml'),
     'utf-8',
