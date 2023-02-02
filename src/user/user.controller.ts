@@ -1,9 +1,19 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { UserEntity } from './entities/user.entity';
 import { UserService } from './user.service';
 import { validateID } from '../utils/validate';
 import { UserResponse } from './interfaces/user.model';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('user')
 export class UserController {
@@ -21,7 +31,20 @@ export class UserController {
   }
 
   @Post()
-  create(@Body() CreateUserDto: CreateUserDto): UserEntity {
-    return this.UserService.create(CreateUserDto);
+  create(@Body() createUserDto: CreateUserDto): UserResponse {
+    return this.UserService.create(createUserDto);
+  }
+
+  @Put(':id')
+  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    validateID(id);
+    return this.UserService.update(id, updateUserDto);
+  }
+
+  @Delete(':id')
+  @HttpCode(204)
+  remove(@Param('id') id: string): void {
+    validateID(id);
+    this.UserService.remove(id);
   }
 }
