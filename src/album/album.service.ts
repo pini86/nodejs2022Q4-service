@@ -7,61 +7,58 @@ import {
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 import * as uuid from 'uuid';
-import { DataBaseInMemory } from '../db/exp.db';
 import { TrackService } from '../track/track.service';
 import { Album } from './entities/album.entity';
 
 @Injectable()
 export class AlbumService {
+  private readonly albums = [];
+
   constructor(
-    private dataBase: DataBaseInMemory,
     @Inject(forwardRef(() => TrackService))
     private readonly trackService: TrackService,
   ) {}
 
-  create(createAlbumDto: CreateAlbumDto) {
+  async create(createAlbumDto: CreateAlbumDto) {
     const newAlbum = Object.assign(new Album(), {
       id: uuid.v4(),
       ...createAlbumDto,
     });
 
-    this.dataBase.albums.push(newAlbum);
+    this.albums.push(newAlbum);
 
     return newAlbum;
   }
 
-  getAll() {
-    return this.dataBase.albums;
+  async getAll() {
+    return this.albums;
   }
 
-  getOne(id: string) {
-    const album = this.dataBase.albums.find((album) => album.id === id);
+  async getOne(id: string) {
+    const album = this.albums.find((album) => album.id === id);
     if (!album) {
       throw new NotFoundException('Album not found');
     }
     return album;
   }
 
-  update(id: string, updateAlbumDto: UpdateAlbumDto) {
-    return Object.assign(this.getOne(id), updateAlbumDto);
+  async update(id: string, updateAlbumDto: UpdateAlbumDto) {
+    return Object.assign(await this.getOne(id), updateAlbumDto);
   }
 
-  remove(id: string) {
-    const albumIndex = this.dataBase.albums.findIndex(
-      (album) => album.id === id,
-    );
+  async remove(id: string) {
+    const albumIndex = this.albums.findIndex((item) => item.id === id);
 
     if (albumIndex === -1) {
       throw new NotFoundException('Album not found');
     }
+    await this.trackService.removeAlbum(id);
 
-    this.dataBase.albums.splice(albumIndex, 1);
-
-    this.trackService.removeAlbum(id);
+    return this.albums.splice(albumIndex, 1)[0];
   }
 
   async removeArtist(id: string) {
-    this.dataBase.albums.forEach((album) => {
+    this.albums.forEach((album) => {
       if (album.artistId === id) {
         album.artistId = null;
       }

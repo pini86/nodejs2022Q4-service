@@ -19,31 +19,31 @@ export class UserController {
   constructor(private readonly UserService: UserService) {}
 
   @Get()
-  getAll(): UserResponse[] {
+  async getAll(): Promise<UserResponse[]> {
     return this.UserService.getAll();
   }
 
   @Get(':id')
-  getOne(@Param('id') id: string): UserResponse {
+  async getOne(@Param('id') id: string): Promise<UserResponse> {
     validateID(id);
     return this.UserService.getOne(id);
   }
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto): UserResponse {
+  async create(@Body() createUserDto: CreateUserDto): Promise<UserResponse> {
     return this.UserService.create(createUserDto);
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     validateID(id);
     return this.UserService.update(id, updateUserDto);
   }
 
   @Delete(':id')
   @HttpCode(204)
-  remove(@Param('id') id: string): void {
+  async remove(@Param('id') id: string) {
     validateID(id);
-    this.UserService.remove(id);
+    await this.UserService.remove(id);
   }
 }

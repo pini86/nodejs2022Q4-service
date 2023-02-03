@@ -2,8 +2,10 @@ import {
   Body,
   Controller,
   Delete,
+  forwardRef,
   Get,
   HttpCode,
+  Inject,
   Param,
   Post,
   Put,
@@ -13,37 +15,49 @@ import { TrackService } from './track.service';
 import { validateID } from '../utils/validate';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
+import { FavoritesService } from 'src/favorite/favorites.service';
 
 @Controller('track')
 export class TrackController {
-  constructor(private readonly TrackService: TrackService) {}
+  constructor(
+    @Inject(forwardRef(() => TrackService))
+    private readonly trackService: TrackService,
+    @Inject(forwardRef(() => FavoritesService))
+    private readonly favoritesService: FavoritesService,
+  ) {}
 
   @Get()
-  getAll(): Track[] {
-    return this.TrackService.getAll();
+  async getAll(): Promise<Track[]> {
+    return this.trackService.getAll();
   }
 
   @Get(':id')
-  getOne(@Param('id') id: string): Track {
+  async getOne(@Param('id') id: string): Promise<Track> {
     validateID(id);
-    return this.TrackService.getOne(id);
+    return this.trackService.getOne(id);
   }
 
   @Post()
-  create(@Body() createTrackDto: CreateTrackDto): Track {
-    return this.TrackService.create(createTrackDto);
+  async create(@Body() createTrackDto: CreateTrackDto): Promise<Track> {
+    return this.trackService.create(createTrackDto);
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateTrackDto: UpdateTrackDto) {
+  async update(
+    @Param('id') id: string,
+    @Body() updateTrackDto: UpdateTrackDto,
+  ) {
     validateID(id);
-    return this.TrackService.update(id, updateTrackDto);
+    return this.trackService.update(id, updateTrackDto);
   }
 
   @Delete(':id')
   @HttpCode(204)
-  remove(@Param('id') id: string): void {
+  async remove(@Param('id') id: string) {
     validateID(id);
-    this.TrackService.remove(id);
+    try {
+      await this.favoritesService.removeTrack(id);
+    } catch {}
+    await this.trackService.remove(id);
   }
 }

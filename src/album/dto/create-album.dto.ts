@@ -2,9 +2,12 @@ import {
   IsInt,
   IsNotEmpty,
   IsOptional,
+  IsPositive,
   IsString,
   IsUUID,
 } from 'class-validator';
+
+const UUID_VERSION = 4;
 
 export class CreateAlbumDto {
   @IsString()
@@ -12,9 +15,10 @@ export class CreateAlbumDto {
   name: string;
 
   @IsInt()
+  @IsPositive()
   year: number;
 
-  @IsUUID()
+  @IsUUID(UUID_VERSION)
   @IsOptional()
-  artistId: string | null;
+  artistId: string | null = null;
 }

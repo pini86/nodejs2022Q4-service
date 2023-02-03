@@ -7,46 +7,57 @@ import {
   Delete,
   HttpCode,
   Put,
+  forwardRef,
+  Inject,
 } from '@nestjs/common';
 import { AlbumService } from './album.service';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 import { Album } from './entities/album.entity';
 import { validateID } from '../utils/validate';
+import { FavoritesService } from '../favorite/favorites.service';
 
 @Controller('album')
 export class AlbumController {
-  constructor(private readonly albumService: AlbumService) {}
+  constructor(
+    @Inject(forwardRef(() => AlbumService))
+    private readonly albumService: AlbumService,
+    @Inject(forwardRef(() => FavoritesService))
+    private readonly favoritesService: FavoritesService,
+  ) {}
 
   @Post()
-  create(@Body() createAlbumDto: CreateAlbumDto): Album {
+  async create(@Body() createAlbumDto: CreateAlbumDto): Promise<Album> {
     return this.albumService.create(createAlbumDto);
   }
 
   @Get()
-  getAll(): Album[] {
+  async getAll(): Promise<Album[]> {
     return this.albumService.getAll();
   }
 
   @Get(':id')
-  getOne(@Param('id') id: string): Album {
+  async getOne(@Param('id') id: string): Promise<Album> {
     validateID(id);
     return this.albumService.getOne(id);
   }
 
   @Put(':id')
-  update(
+  async update(
     @Param('id') id: string,
     @Body() updateAlbumDto: UpdateAlbumDto,
-  ): Album {
+  ): Promise<Album> {
     validateID(id);
     return this.albumService.update(id, updateAlbumDto);
   }
 
   @Delete(':id')
   @HttpCode(204)
-  remove(@Param('id') id: string): void {
+  async remove(@Param('id') id: string) {
     validateID(id);
-    this.albumService.remove(id);
+    try {
+      await this.favoritesService.removeAlbum(id);
+    } catch {}
+    await this.albumService.remove(id);
   }
 }

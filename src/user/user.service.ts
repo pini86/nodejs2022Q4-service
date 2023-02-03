@@ -1,10 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   ConflictException,
   ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { DataBaseInMemory } from '../db/exp.db';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
 import * as uuid from 'uuid';
@@ -12,14 +12,14 @@ import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UserService {
-  constructor(private dataBase: DataBaseInMemory) {}
+  private readonly users = [];
 
-  getAll() {
-    return this.dataBase.users;
+  async getAll() {
+    return this.users;
   }
 
-  getOne(id: string) {
-    const user = this.dataBase.users.find((item) => item.id === id);
+  async getOne(id: string) {
+    const user = this.users.find((item) => item.id === id);
     if (!user) {
       throw new NotFoundException('User not found');
     }
@@ -27,10 +27,8 @@ export class UserService {
     return userwopass;
   }
 
-  create(createUserDto: CreateUserDto) {
-    if (
-      this.dataBase.users.find((item) => item.login === createUserDto.login)
-    ) {
+  async create(createUserDto: CreateUserDto) {
+    if (this.users.find((item) => item.login === createUserDto.login)) {
       throw new ConflictException('User already exists');
     }
     const dateNow = Date.now();
@@ -41,13 +39,14 @@ export class UserService {
       updatedAt: dateNow,
       ...createUserDto,
     });
-    this.dataBase.users.push(newUser);
+
+    this.users.push(newUser);
     const { password, ...userwopass } = newUser;
     return userwopass;
   }
 
-  update(id: string, updateUserDto: UpdateUserDto) {
-    const user = this.dataBase.users.find((item) => item.id === id);
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    const user = this.users.find((item) => item.id === id);
     if (!user) {
       throw new NotFoundException('User not found');
     }
@@ -59,21 +58,20 @@ export class UserService {
     }
 
     user.password = newPassword;
-    user.version = user.version + 1;
+    user.version += 1;
     user.updatedAt = Date.now();
 
     const { password, ...userwopass } = user;
     return userwopass;
   }
 
-  remove(id: string) {
-    const indexUser = this.dataBase.users.findIndex((item) => item.id === id);
+  async remove(id: string) {
+    const indexUser = this.users.findIndex((item) => item.id === id);
 
     if (indexUser === -1) {
       throw new NotFoundException('User not found');
     }
-    this.dataBase.users.splice(indexUser, 1);
 
-    return;
+    this.users.splice(indexUser, 1);
   }
 }

@@ -1,5 +1,4 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { DataBaseInMemory } from '../db/exp.db';
 import { CreateTrackDto } from './dto/create-track.dto';
 import * as uuid from 'uuid';
 import { UpdateTrackDto } from './dto/update-track.dto';
@@ -7,56 +6,57 @@ import { Track } from './entities/track.entity';
 
 @Injectable()
 export class TrackService {
-  constructor(private dataBase: DataBaseInMemory) {}
+  private readonly tracks = [];
 
-  getAll() {
-    return this.dataBase.tracks;
+  async getAll() {
+    return this.tracks;
   }
 
-  getOne(id: string) {
-    const track = this.dataBase.tracks.find((item) => item.id === id);
+  async getOne(id: string) {
+    const track = this.tracks.find((item) => item.id === id);
+
     if (!track) {
       throw new NotFoundException('Track not found');
     }
+
     return track;
   }
 
-  create(createTrackDto: CreateTrackDto) {
-    const track = Object.assign(new Track(), {
+  async create(createTrackDto: CreateTrackDto) {
+    const newTrack = Object.assign(new Track(), {
       id: uuid.v4(),
       ...createTrackDto,
     });
 
-    this.dataBase.tracks.push(track);
+    this.tracks.push(newTrack);
 
-    return track;
+    return newTrack;
   }
 
-  update(id: string, updateTrackDto: UpdateTrackDto) {
-    return Object.assign(this.getOne(id), updateTrackDto);
+  async update(id: string, updateTrackDto: UpdateTrackDto) {
+    return Object.assign(await this.getOne(id), updateTrackDto);
   }
 
-  remove(id: string) {
-    const indexTrack = this.dataBase.tracks.findIndex((item) => item.id === id);
+  async remove(id: string) {
+    const index = this.tracks.findIndex((item) => item.id === id);
 
-    if (indexTrack === -1) {
-      throw new NotFoundException('Track not found');
+    if (index != -1) {
+      return this.tracks.splice(index, 1)[0];
     }
-    this.dataBase.tracks.splice(indexTrack, 1);
 
-    return;
+    throw new NotFoundException('Track not found');
   }
 
-  removeArtist(id: string) {
-    this.dataBase.tracks.forEach((track) => {
+  async removeArtist(id: string) {
+    this.tracks.forEach((track) => {
       if (track.artistId === id) {
         track.artistId = null;
       }
     });
   }
 
-  removeAlbum(id: string) {
-    this.dataBase.tracks.forEach((track) => {
+  async removeAlbum(id: string) {
+    this.tracks.forEach((track) => {
       if (track.albumId === id) {
         track.albumId = null;
       }
