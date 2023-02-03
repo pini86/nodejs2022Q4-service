@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { DataBaseInMemory } from '../db/exp.db';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UserEntity } from './entities/user.entity';
+import { User } from './entities/user.entity';
 import * as uuid from 'uuid';
 import { UpdateUserDto } from './dto/update-user.dto';
 
@@ -34,7 +34,7 @@ export class UserService {
       throw new ConflictException('User already exists');
     }
     const dateNow = Date.now();
-    const newUser = Object.assign(new UserEntity(), {
+    const newUser = Object.assign(new User(), {
       id: uuid.v4(),
       version: 1,
       createdAt: dateNow,

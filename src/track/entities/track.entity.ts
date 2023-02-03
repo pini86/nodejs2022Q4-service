@@ -1,4 +1,4 @@
-class TrackEntity {
+class Track {
   id: string;
   name: string;
   artistId: string | null;
@@ -6,4 +6,4 @@ class TrackEntity {
   duration: number;
 }
 
-export { TrackEntity };
+export { Track };

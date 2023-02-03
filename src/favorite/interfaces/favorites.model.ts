@@ -1,6 +1,6 @@
-import { Artist } from '../../artist/interfaces/artist.model';
-import { Album } from '../../album/interfaces/album.model';
-import { Track } from '../../track/interfaces/track.model';
+import { Artist } from '../../artist/entities/artist.entity';
+import { Album } from '../../album/entities/album.entity';
+import { Track } from '../../track/entities/track.entity';
 
 interface Favorites {
   artists: string[];

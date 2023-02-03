@@ -9,6 +9,7 @@ import { UpdateArtistDto } from './dto/update-artist.dto';
 import { DataBaseInMemory } from '../db/exp.db';
 import * as uuid from 'uuid';
 import { Artist } from './entities/artist.entity';
+import { AlbumService } from '../album/album.service';
 import { TrackService } from '../track/track.service';
 
 @Injectable()
@@ -17,6 +18,8 @@ export class ArtistService {
     private dataBase: DataBaseInMemory,
     @Inject(forwardRef(() => TrackService))
     private readonly trackService: TrackService,
+    @Inject(forwardRef(() => AlbumService))
+    private readonly albumService: AlbumService,
   ) {}
 
   create(createArtistDto: CreateArtistDto) {

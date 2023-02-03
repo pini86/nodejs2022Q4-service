@@ -8,7 +8,7 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { TrackEntity } from './entities/track.entity';
+import { Track } from './entities/track.entity';
 import { TrackService } from './track.service';
 import { validateID } from '../utils/validate';
 import { CreateTrackDto } from './dto/create-track.dto';
@@ -19,18 +19,18 @@ export class TrackController {
   constructor(private readonly TrackService: TrackService) {}
 
   @Get()
-  getAll(): TrackEntity[] {
+  getAll(): Track[] {
     return this.TrackService.getAll();
   }
 
   @Get(':id')
-  getOne(@Param('id') id: string): TrackEntity {
+  getOne(@Param('id') id: string): Track {
     validateID(id);
     return this.TrackService.getOne(id);
   }
 
   @Post()
-  create(@Body() createTrackDto: CreateTrackDto): TrackEntity {
+  create(@Body() createTrackDto: CreateTrackDto): Track {
     return this.TrackService.create(createTrackDto);
   }
 

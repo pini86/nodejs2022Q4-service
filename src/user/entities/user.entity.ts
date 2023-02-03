@@ -6,8 +6,8 @@ class UserResponse {
   updatedAt: number;
 }
 
-class UserEntity extends UserResponse {
+class User extends UserResponse {
   password: string;
 }
 
-export { UserResponse, UserEntity };
+export { UserResponse, User };

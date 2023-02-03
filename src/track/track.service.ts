@@ -3,7 +3,7 @@ import { DataBaseInMemory } from '../db/exp.db';
 import { CreateTrackDto } from './dto/create-track.dto';
 import * as uuid from 'uuid';
 import { UpdateTrackDto } from './dto/update-track.dto';
-import { TrackEntity } from './entities/track.entity';
+import { Track } from './entities/track.entity';
 
 @Injectable()
 export class TrackService {
@@ -22,7 +22,7 @@ export class TrackService {
   }
 
   create(createTrackDto: CreateTrackDto) {
-    const track = Object.assign(new TrackEntity(), {
+    const track = Object.assign(new Track(), {
       id: uuid.v4(),
       ...createTrackDto,
     });
@@ -51,6 +51,14 @@ export class TrackService {
     this.dataBase.tracks.forEach((track) => {
       if (track.artistId === id) {
         track.artistId = null;
+      }
+    });
+  }
+
+  removeAlbum(id: string) {
+    this.dataBase.tracks.forEach((track) => {
+      if (track.albumId === id) {
+        track.albumId = null;
       }
     });
   }
