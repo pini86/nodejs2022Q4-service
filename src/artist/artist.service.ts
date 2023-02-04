@@ -14,7 +14,7 @@ import { Errors_Messages } from '../utils/constants';
 
 @Injectable()
 export class ArtistService {
-  private readonly artists = [];
+  private readonly artists: Artist[] = [];
 
   constructor(
     @Inject(forwardRef(() => TrackService))

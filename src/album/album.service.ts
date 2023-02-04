@@ -13,7 +13,7 @@ import { Errors_Messages } from '../utils/constants';
 
 @Injectable()
 export class AlbumService {
-  private readonly albums = [];
+  private readonly albums: Album[] = [];
 
   constructor(
     @Inject(forwardRef(() => TrackService))
