@@ -8,6 +8,7 @@ import {
 import { ArtistService } from '../artist/artist.service';
 import { AlbumService } from '../album/album.service';
 import { TrackService } from '../track/track.service';
+import { Errors_Messages } from '../utils/constants';
 
 @Injectable()
 export class FavoritesService {
@@ -46,50 +47,50 @@ export class FavoritesService {
     try {
       await this.artistService.getOne(id);
     } catch {
-      throw new UnprocessableEntityException('Artist not exists');
+      throw new UnprocessableEntityException(Errors_Messages.ARTIST_NOT_EXISTS);
     }
 
     if (this.artists.includes(id)) {
-      return { message: 'Artist exists in favorites' };
+      return { message: Errors_Messages.ALREADY_EXISTS_FAV };
     }
 
     this.artists.push(id);
-    return { message: 'Favorites added successfully' };
+    return { message: Errors_Messages.FAV_ADDED };
   }
 
   async addAlbum(id: string) {
     try {
       await this.albumService.getOne(id);
     } catch {
-      throw new UnprocessableEntityException('Album not exists');
+      throw new UnprocessableEntityException(Errors_Messages.ALBUM_NOT_EXISTS);
     }
     if (this.albums.includes(id)) {
-      return { message: 'Album exists in favorites' };
+      return { message: Errors_Messages.ALREADY_EXISTS_FAV };
     }
 
     this.albums.push(id);
-    return { message: 'Favorites added successfully' };
+    return { message: Errors_Messages.FAV_ADDED };
   }
 
   async addTrack(id: string) {
     try {
       await this.trackService.getOne(id);
     } catch {
-      throw new UnprocessableEntityException('Track not exists');
+      throw new UnprocessableEntityException(Errors_Messages.TRACK_NOT_EXISTS);
     }
     if (this.tracks.includes(id)) {
-      return { message: 'Track exists in favorites' };
+      return { message: Errors_Messages.ALREADY_EXISTS_FAV };
     }
 
     this.tracks.push(id);
-    return { message: 'Favorites added successfully' };
+    return { message: Errors_Messages.FAV_ADDED };
   }
 
   async removeArtist(id: string) {
     const artistIndex = this.artists.findIndex((artistId) => artistId === id);
 
     if (artistIndex === -1) {
-      throw new NotFoundException('Artist not found');
+      throw new NotFoundException(Errors_Messages.ARTIST_NOT_FOUND);
     }
 
     this.artists.splice(artistIndex, 1);
@@ -99,7 +100,7 @@ export class FavoritesService {
     const albumIndex = this.albums.findIndex((albumId) => albumId === id);
 
     if (albumIndex === -1) {
-      throw new NotFoundException('Album not found');
+      throw new NotFoundException(Errors_Messages.ALBUM_NOT_FOUND);
     }
 
     this.albums.splice(albumIndex, 1);
@@ -109,7 +110,7 @@ export class FavoritesService {
     const trackIndex = this.tracks.findIndex((trackId) => trackId === id);
 
     if (trackIndex === -1) {
-      throw new NotFoundException('Album not found');
+      throw new NotFoundException(Errors_Messages.TRACK_NOT_FOUND);
     }
 
     this.tracks.splice(trackIndex, 1);

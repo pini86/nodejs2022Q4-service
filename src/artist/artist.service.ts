@@ -10,6 +10,7 @@ import * as uuid from 'uuid';
 import { Artist } from './entities/artist.entity';
 import { AlbumService } from '../album/album.service';
 import { TrackService } from '../track/track.service';
+import { Errors_Messages } from '../utils/constants';
 
 @Injectable()
 export class ArtistService {
@@ -38,7 +39,7 @@ export class ArtistService {
   async getOne(id: string) {
     const artist = this.artists.find((artist) => artist.id === id);
     if (!artist) {
-      throw new NotFoundException('Artist not found');
+      throw new NotFoundException(Errors_Messages.ARTIST_NOT_FOUND);
     }
     return artist;
   }
@@ -51,7 +52,7 @@ export class ArtistService {
     const artistIndex = this.artists.findIndex((artist) => artist.id === id);
 
     if (artistIndex === -1) {
-      throw new NotFoundException('Artist not found');
+      throw new NotFoundException(Errors_Messages.ARTIST_NOT_FOUND);
     }
 
     this.artists.splice(artistIndex, 1);

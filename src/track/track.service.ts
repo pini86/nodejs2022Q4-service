@@ -3,6 +3,7 @@ import { CreateTrackDto } from './dto/create-track.dto';
 import * as uuid from 'uuid';
 import { UpdateTrackDto } from './dto/update-track.dto';
 import { Track } from './entities/track.entity';
+import { Errors_Messages } from '../utils/constants';
 
 @Injectable()
 export class TrackService {
@@ -16,7 +17,7 @@ export class TrackService {
     const track = this.tracks.find((item) => item.id === id);
 
     if (!track) {
-      throw new NotFoundException('Track not found');
+      throw new NotFoundException(Errors_Messages.TRACK_NOT_FOUND);
     }
 
     return track;
@@ -44,7 +45,7 @@ export class TrackService {
       return this.tracks.splice(index, 1)[0];
     }
 
-    throw new NotFoundException('Track not found');
+    throw new NotFoundException(Errors_Messages.TRACK_NOT_FOUND);
   }
 
   async removeArtist(id: string) {

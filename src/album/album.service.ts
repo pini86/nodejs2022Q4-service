@@ -9,6 +9,7 @@ import { UpdateAlbumDto } from './dto/update-album.dto';
 import * as uuid from 'uuid';
 import { TrackService } from '../track/track.service';
 import { Album } from './entities/album.entity';
+import { Errors_Messages } from '../utils/constants';
 
 @Injectable()
 export class AlbumService {
@@ -37,7 +38,7 @@ export class AlbumService {
   async getOne(id: string) {
     const album = this.albums.find((album) => album.id === id);
     if (!album) {
-      throw new NotFoundException('Album not found');
+      throw new NotFoundException(Errors_Messages.ALBUM_NOT_FOUND);
     }
     return album;
   }
@@ -50,7 +51,7 @@ export class AlbumService {
     const albumIndex = this.albums.findIndex((item) => item.id === id);
 
     if (albumIndex === -1) {
-      throw new NotFoundException('Album not found');
+      throw new NotFoundException(Errors_Messages.ALBUM_NOT_FOUND);
     }
     await this.trackService.removeAlbum(id);
 
