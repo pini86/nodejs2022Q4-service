@@ -19,7 +19,7 @@ async function bootstrap() {
     'utf-8',
   );
 
-  SwaggerModule.setup('api', app, parse(apiSchema));
+  SwaggerModule.setup('doc', app, parse(apiSchema));
 
   await app.listen(PORT);
 }

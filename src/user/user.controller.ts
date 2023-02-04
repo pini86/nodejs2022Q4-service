@@ -8,8 +8,10 @@ import {
   Param,
   Post,
   Put,
+  UseInterceptors,
+  ClassSerializerInterceptor,
 } from '@nestjs/common';
-import { UserResponse } from './entities/user.entity';
+import { User } from './entities/user.entity';
 import { UserService } from './user.service';
 import { validateID } from '../utils/validate';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -20,22 +22,26 @@ export class UserController {
   constructor(private readonly UserService: UserService) {}
 
   @Get()
-  async getAll(): Promise<UserResponse[]> {
+  @UseInterceptors(ClassSerializerInterceptor)
+  async getAll(): Promise<User[]> {
     return this.UserService.getAll();
   }
 
   @Get(':id')
-  async getOne(@Param('id') id: string): Promise<UserResponse> {
+  @UseInterceptors(ClassSerializerInterceptor)
+  async getOne(@Param('id') id: string): Promise<User> {
     validateID(id);
     return this.UserService.getOne(id);
   }
 
   @Post()
-  async create(@Body() createUserDto: CreateUserDto): Promise<UserResponse> {
+  @UseInterceptors(ClassSerializerInterceptor)
+  async create(@Body() createUserDto: CreateUserDto): Promise<User> {
     return this.UserService.create(createUserDto);
   }
 
   @Put(':id')
+  @UseInterceptors(ClassSerializerInterceptor)
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     validateID(id);
     return this.UserService.update(id, updateUserDto);

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   ConflictException,
   ForbiddenException,
@@ -24,8 +23,8 @@ export class UserService {
     if (!user) {
       throw new NotFoundException(Errors_Messages.USER_NOT_FOUND);
     }
-    const { password, ...userwopass } = user;
-    return userwopass;
+
+    return user;
   }
 
   async create(createUserDto: CreateUserDto) {
@@ -33,7 +32,7 @@ export class UserService {
       throw new ConflictException(Errors_Messages.USER_EXISTS);
     }
     const dateNow = Date.now();
-    const newUser = Object.assign(new User(), {
+    const newUser = new User({
       id: uuid.v4(),
       version: 1,
       createdAt: dateNow,
@@ -42,8 +41,7 @@ export class UserService {
     });
 
     this.users.push(newUser);
-    const { password, ...userwopass } = newUser;
-    return userwopass;
+    return newUser;
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
@@ -62,8 +60,7 @@ export class UserService {
     user.version += 1;
     user.updatedAt = Date.now();
 
-    const { password, ...userwopass } = user;
-    return userwopass;
+    return user;
   }
 
   async remove(id: string) {
