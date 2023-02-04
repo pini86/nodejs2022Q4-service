@@ -6,8 +6,7 @@ import {
   IsNumber,
   IsPositive,
 } from 'class-validator';
-
-const UUID_VERSION = 4;
+import { UUID_VER } from '../../utils/constants';
 
 export class CreateTrackDto {
   @IsNotEmpty()
@@ -15,11 +14,11 @@ export class CreateTrackDto {
   readonly name: string;
 
   @IsOptional()
-  @IsUUID(UUID_VERSION)
+  @IsUUID(UUID_VER)
   readonly artistId?: string | null = null;
 
   @IsOptional()
-  @IsUUID(UUID_VERSION)
+  @IsUUID(UUID_VER)
   readonly albumId?: string | null = null;
 
   @IsNumber()

@@ -6,8 +6,7 @@ import {
   IsString,
   IsUUID,
 } from 'class-validator';
-
-const UUID_VERSION = 4;
+import { UUID_VER } from '../../utils/constants';
 
 export class CreateAlbumDto {
   @IsString()
@@ -18,7 +17,7 @@ export class CreateAlbumDto {
   @IsPositive()
   year: number;
 
-  @IsUUID(UUID_VERSION)
+  @IsUUID(UUID_VER)
   @IsOptional()
   artistId: string | null = null;
 }
