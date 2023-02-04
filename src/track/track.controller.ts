@@ -5,6 +5,7 @@ import {
   forwardRef,
   Get,
   HttpCode,
+  HttpStatus,
   Inject,
   Param,
   Post,
@@ -52,7 +53,7 @@ export class TrackController {
   }
 
   @Delete(':id')
-  @HttpCode(204)
+  @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id') id: string) {
     validateID(id);
     try {

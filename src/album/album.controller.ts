@@ -9,6 +9,7 @@ import {
   Put,
   forwardRef,
   Inject,
+  HttpStatus,
 } from '@nestjs/common';
 import { AlbumService } from './album.service';
 import { CreateAlbumDto } from './dto/create-album.dto';
@@ -52,7 +53,7 @@ export class AlbumController {
   }
 
   @Delete(':id')
-  @HttpCode(204)
+  @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id') id: string) {
     validateID(id);
     try {
