@@ -8,7 +8,7 @@
 ## Downloading
 
 ```
-git clone {repository URL}
+git clone https://github.com/pini86/nodejs2022Q4-service.git
 ```
 
 ## Installing NPM modules
@@ -17,21 +17,42 @@ git clone {repository URL}
 npm install
 ```
 
+## Switch to 'rest-service' branch
+
+```
+git switch rest-service
+```
+
+## Set HTTP port value (if necessary)
+
+```
+Rename '.env.example' to '.env' and set new value of PORT (4000 as default)
+```
+
 ## Running application
 
 ```
-npm start
+npm run start
 ```
 
+## Running application in developer mode
+
+```
+npm run start:dev
+```
+
+## Use OpenAPI/Swagger
+
+```
 After starting the app on port (4000 as default) you can open
-in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
-For more information about OpenAPI/Swagger please visit https://swagger.io/.
+in browser OpenAPI/Swagger documentation by route http://localhost:4000/doc/.
+```
 
 ## Testing
 
 After application running open new terminal and enter:
 
-To run all tests without authorization
+To run all tests
 
 ```
 npm run test
@@ -41,18 +62,6 @@ To run only one of all test suites
 
 ```
 npm run test -- <path to suite>
-```
-
-To run all test with authorization
-
-```
-npm run test:auth
-```
-
-To run only specific test suite with authorization
-
-```
-npm run test:auth -- <path to suite>
 ```
 
 ### Auto-fix and format
