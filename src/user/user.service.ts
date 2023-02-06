@@ -11,7 +11,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { Errors_Messages } from '../utils/constants';
 
 @Injectable()
-export class UserService {
+export class UsersService {
   private readonly users = [];
 
   async getAll() {

@@ -12,14 +12,14 @@ import {
   ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { User } from './entities/user.entity';
-import { UserService } from './user.service';
+import { UsersService } from './user.service';
 import { validateID } from '../utils/validate';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly UserService: UserService) {}
+  constructor(private readonly UserService: UsersService) {}
 
   @Get()
   @UseInterceptors(ClassSerializerInterceptor)
