@@ -1,0 +1,41 @@
+version: '3.9' 
+
+networks:
+  pini86_network:
+    name: pini86_network
+
+volumes:
+  pg-vol:
+
+services:
+  node:
+    build: ./requirements/node
+    container_name: pini86_node
+    image: pini86_node
+    networks:
+      - pini86_network
+    depends_on:
+      - postgres
+
+    env_file:
+      - .env
+    ports:
+      - ${NODE_PORT}:4000
+    restart: unless-stopped
+    volumes:
+      - .:/app
+
+  postgres:
+    build: ./requirements/postgres
+    container_name: pini86_postgres
+    image: pini86_postgres
+    networks:
+      - pini86_network
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - ${POSTGRES_PORT}:5432
+    restart: unless-stopped
+    volumes:
+      - pg-vol:/var/lib/postgresql/data
