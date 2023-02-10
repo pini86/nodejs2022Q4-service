@@ -6,38 +6,33 @@ import {
 } from '@nestjs/common';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
-import * as uuid from 'uuid';
 import { Artist } from './entities/artist.entity';
 import { AlbumService } from '../album/album.service';
 import { TrackService } from '../track/track.service';
 import { Errors_Messages } from '../utils/constants';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class ArtistService {
-  private readonly artists: Artist[] = [];
-
   constructor(
-    @Inject(forwardRef(() => TrackService))
     private readonly trackService: TrackService,
-    @Inject(forwardRef(() => AlbumService))
     private readonly albumService: AlbumService,
+    @InjectRepository(Artist)
+    private readonly artistsRepository: Repository<Artist>,
   ) {}
 
   async create(createArtistDto: CreateArtistDto) {
-    const newArtist = Object.assign(new Artist(), {
-      id: uuid.v4(),
-      ...createArtistDto,
-    });
-    this.artists.push(newArtist);
-    return newArtist;
+    const artist = this.artistsRepository.create(createArtistDto);
+    return this.artistsRepository.save(artist);
   }
 
   async getAll() {
-    return this.artists;
+    return this.artistsRepository.find();
   }
 
   async getOne(id: string) {
-    const artist = this.artists.find((artist) => artist.id === id);
+    const artist = this.artistsRepository.findOneBy({ id });
     if (!artist) {
       throw new NotFoundException(Errors_Messages.ARTIST_NOT_FOUND);
     }
@@ -45,11 +40,12 @@ export class ArtistService {
   }
 
   async update(id: string, updateArtistDto: UpdateArtistDto) {
-    return Object.assign(await this.getOne(id), updateArtistDto);
+    const artist = Object.assign(await this.getOne(id), updateArtistDto);
+    return this.artistsRepository.save(artist);
   }
 
   async remove(id: string) {
-    const artistIndex = this.artists.findIndex((artist) => artist.id === id);
+    /* const artistIndex = this.artists.findIndex((artist) => artist.id === id);
 
     if (artistIndex === -1) {
       throw new NotFoundException(Errors_Messages.ARTIST_NOT_FOUND);
@@ -59,6 +55,8 @@ export class ArtistService {
 
     await this.albumService.removeArtist(id);
 
-    await this.trackService.removeArtist(id);
+    await this.trackService.removeArtist(id); */
+    const artist = await this.getOne(id);
+    return this.artistsRepository.softRemove(artist);
   }
 }
