@@ -32,7 +32,7 @@ export class ArtistService {
   }
 
   async getOne(id: string) {
-    const artist = this.artistsRepository.findOneBy({ id });
+    const artist = await this.artistsRepository.findOneBy({ id });
     if (!artist) {
       throw new NotFoundException(Errors_Messages.ARTIST_NOT_FOUND);
     }
@@ -57,6 +57,6 @@ export class ArtistService {
 
     await this.trackService.removeArtist(id); */
     const artist = await this.getOne(id);
-    return this.artistsRepository.softRemove(artist);
+    return this.artistsRepository.remove(artist);
   }
 }
