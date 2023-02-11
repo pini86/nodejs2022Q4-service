@@ -32,7 +32,7 @@ export class UsersService {
   }
 
   async create(createUserDto: CreateUserDto) {
-    if (this.usersRepository.findOneBy({ login: createUserDto.login })) {
+    if (await this.usersRepository.findOneBy({ login: createUserDto.login })) {
       throw new ConflictException(Errors_Messages.USER_EXISTS);
     }
     const user = this.usersRepository.create(createUserDto);
@@ -55,7 +55,7 @@ export class UsersService {
     user.version += 1;
     //user.updatedAt = Date.now();
 
-    return user;
+    return this.usersRepository.save(user);
   }
 
   async remove(id: string) {
