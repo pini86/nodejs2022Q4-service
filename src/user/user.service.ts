@@ -1,5 +1,5 @@
 import {
-  ConflictException,
+  // ConflictException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -32,9 +32,9 @@ export class UsersService {
   }
 
   async create(createUserDto: CreateUserDto) {
-    if (await this.usersRepository.findOneBy({ login: createUserDto.login })) {
+    /*  if (await this.usersRepository.findOneBy({ login: createUserDto.login })) {
       throw new ConflictException(Errors_Messages.USER_EXISTS);
-    }
+    } */
     const user = this.usersRepository.create(createUserDto);
     return this.usersRepository.save(user);
   }
@@ -52,7 +52,7 @@ export class UsersService {
     }
 
     user.password = newPassword;
-    user.version += 1;
+    //user.version += 1;
     //user.updatedAt = Date.now();
 
     return this.usersRepository.save(user);

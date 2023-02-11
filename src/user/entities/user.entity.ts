@@ -5,6 +5,7 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  VersionColumn,
 } from 'typeorm';
 
 @Entity('users')
@@ -19,13 +20,24 @@ export class User {
   @Exclude()
   password: string;
 
-  @Column({ default: 1 })
+  @VersionColumn()
   version: number;
 
   @CreateDateColumn()
+  @CreateDateColumn({
+    transformer: {
+      from: (value) => value.getTime(),
+      to: (value) => value,
+    },
+  })
   createdAt: number;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({
+    transformer: {
+      from: (value) => value.getTime(),
+      to: (value) => value,
+    },
+  })
   updatedAt: number;
 
   constructor(partial: Partial<User>) {
