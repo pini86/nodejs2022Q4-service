@@ -1,20 +1,24 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTrackDto } from './dto/create-track.dto';
-import * as uuid from 'uuid';
 import { UpdateTrackDto } from './dto/update-track.dto';
 import { Track } from './entities/track.entity';
 import { Errors_Messages } from '../utils/constants';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class TrackService {
-  private readonly tracks = [];
+  constructor(
+    @InjectRepository(Track)
+    private readonly tracksRepository: Repository<Track>,
+  ) {}
 
   async getAll() {
-    return this.tracks;
+    return this.tracksRepository.find();
   }
 
   async getOne(id: string) {
-    const track = this.tracks.find((item) => item.id === id);
+    const track = await this.tracksRepository.findOneBy({ id });
 
     if (!track) {
       throw new NotFoundException(Errors_Messages.TRACK_NOT_FOUND);
@@ -24,31 +28,28 @@ export class TrackService {
   }
 
   async create(createTrackDto: CreateTrackDto) {
-    const newTrack = Object.assign(new Track(), {
-      id: uuid.v4(),
-      ...createTrackDto,
-    });
-
-    this.tracks.push(newTrack);
-
-    return newTrack;
+    const track = this.tracksRepository.create(createTrackDto);
+    return this.tracksRepository.save(track);
   }
 
   async update(id: string, updateTrackDto: UpdateTrackDto) {
-    return Object.assign(await this.getOne(id), updateTrackDto);
+    const track = Object.assign(await this.getOne(id), updateTrackDto);
+    return this.tracksRepository.save(track);
   }
 
   async remove(id: string) {
-    const index = this.tracks.findIndex((item) => item.id === id);
+    const track = await this.getOne(id);
+    return this.tracksRepository.remove(track);
+    /* const index = this.tracks.findIndex((item) => item.id === id);
 
     if (index != -1) {
       return this.tracks.splice(index, 1)[0];
     }
 
-    throw new NotFoundException(Errors_Messages.TRACK_NOT_FOUND);
+    throw new NotFoundException(Errors_Messages.TRACK_NOT_FOUND); */
   }
 
-  async removeArtist(id: string) {
+  /* async removeArtist(id: string) {
     this.tracks.forEach((track) => {
       if (track.artistId === id) {
         track.artistId = null;
@@ -62,5 +63,5 @@ export class TrackService {
         track.albumId = null;
       }
     });
-  }
+  } */
 }
