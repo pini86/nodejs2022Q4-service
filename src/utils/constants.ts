@@ -15,4 +15,6 @@ enum Errors_Messages {
 
 const UUID_VER = 4;
 
-export { Errors_Messages, UUID_VER };
+const FAVORITE_TECH_ID = 'e335ad78-2372-4500-af32-b363ba5ae713';
+
+export { Errors_Messages, UUID_VER, FAVORITE_TECH_ID };

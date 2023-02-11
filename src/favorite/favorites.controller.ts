@@ -17,7 +17,8 @@ export class FavoritesController {
 
   @Get()
   async getAll(): Promise<FavoritesResponse> {
-    return this.favoritesService.getAll();
+    const favs = await this.favoritesService.getAll();
+    return this.favoritesService.getAllResponse(favs);
   }
 
   @Post('track/:id')
