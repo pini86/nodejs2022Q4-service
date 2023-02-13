@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule } from '@nestjs/swagger';
 import { readFile } from 'fs/promises';
-import { join } from 'path';
+import { resolve } from 'path';
 import { AppModule } from './app.module';
 import 'dotenv/config';
 import { parse } from 'yaml';
@@ -15,7 +15,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
   const apiSchema = await readFile(
-    join(__dirname, '..', 'doc/api.yaml'),
+    resolve(process.cwd(), 'doc', 'api.yaml'),
     'utf-8',
   );
 

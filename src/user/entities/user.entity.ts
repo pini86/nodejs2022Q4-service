@@ -23,7 +23,6 @@ export class User {
   @VersionColumn()
   version: number;
 
-  @CreateDateColumn()
   @CreateDateColumn({
     transformer: {
       from: (value) => value.getTime(),

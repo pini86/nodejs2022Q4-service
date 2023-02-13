@@ -1,5 +1,5 @@
 # BUILD FOR LOCAL DEVELOPMENT
-FROM node:18-alpine3.14 AS development
+FROM node:16-alpine3.15 AS development
 ENV TZ Europe/Moscow
 STOPSIGNAL SIGKILL
 WORKDIR /app
@@ -9,7 +9,7 @@ COPY --chown=node:node . .
 USER node
 
 # BUILD FOR PRODUCTION
-FROM node:18-alpine3.14 AS build
+FROM node:16-alpine3.15 AS build
 ENV TZ Europe/Moscow
 ENV NODE_ENV production
 STOPSIGNAL SIGKILL
@@ -22,7 +22,7 @@ RUN npm ci --only=production && npm cache clean --force
 USER node
 
 # PRODUCTION
-FROM node:18-alpine3.14 AS production
+FROM node:16-alpine3.15 AS production
 ENV TZ Europe/Moscow
 ENV NODE_ENV production
 STOPSIGNAL SIGKILL
