@@ -4,6 +4,7 @@
 
 - Git - [Download & Install Git](https://git-scm.com/downloads).
 - Node.js - [Download & Install Node.js](https://nodejs.org/en/download/) and the npm package manager.
+- Docker and Docker compose [Download & install Docker](https://www.docker.com/products/docker-desktop/)
 
 ## Downloading
 
@@ -11,16 +12,16 @@
 git clone https://github.com/pini86/nodejs2022Q4-service.git
 ```
 
+## Switch to 'docker' branch
+
+```
+git switch docker
+```
+
 ## Installing NPM modules
 
 ```
 npm install
-```
-
-## Switch to 'rest-service' branch
-
-```
-git switch rest-service
 ```
 
 ## Set HTTP port value (if necessary)
@@ -32,13 +33,20 @@ Rename '.env.example' to '.env' and set new value of PORT (4000 as default)
 ## Running application
 
 ```
-npm run start
+docker-compose up
 ```
 
-## Running application in developer mode
+## Stop application (you can also use 'CTRL+C')
 
 ```
-npm run start:dev
+docker-compose down
+```
+
+## Vulnerabilities scan for Node and Postgres
+
+```
+npm run scan:node
+npm run scan:pg
 ```
 
 ## Use OpenAPI/Swagger
@@ -55,27 +63,21 @@ After application running open new terminal and enter:
 To run all tests
 
 ```
-npm run test
+docker-compose exec node npm run test
 ```
 
 To run only one of all test suites
 
 ```
-npm run test -- <path to suite>
+docker-compose exec node npm run test -- <path to suite>
 ```
 
-### Auto-fix and format
+## Auto-fix and format
 
 ```
-npm run lint
+docker-compose exec node npm run lint
 ```
 
 ```
-npm run format
+docker-compose exec node npm run format
 ```
-
-### Debugging in VSCode
-
-Press <kbd>F5</kbd> to debug.
-
-For more information, visit: https://code.visualstudio.com/docs/editor/debugging
