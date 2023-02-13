@@ -57,13 +57,6 @@ export class FavoritesService {
     } catch {
       throw new UnprocessableEntityException(Errors_Messages.ARTIST_NOT_EXISTS);
     }
-
-    /*   if (this.artists.includes(id)) {
-      return { message: Errors_Messages.ALREADY_EXISTS_FAV };
-    }
-
-    this.artists.push(id);
-    return { message: Errors_Messages.FAV_ADDED }; */
   }
 
   async addAlbum(id: string) {
@@ -78,12 +71,6 @@ export class FavoritesService {
     } catch {
       throw new UnprocessableEntityException(Errors_Messages.ALBUM_NOT_EXISTS);
     }
-    /*  if (this.albums.includes(id)) {
-      return { message: Errors_Messages.ALREADY_EXISTS_FAV };
-    }
-
-    this.albums.push(id);
-    return { message: Errors_Messages.FAV_ADDED }; */
   }
 
   async addTrack(id: string) {
@@ -98,12 +85,6 @@ export class FavoritesService {
     } catch {
       throw new UnprocessableEntityException(Errors_Messages.TRACK_NOT_EXISTS);
     }
-    /*   if (this.tracks.includes(id)) {
-      return { message: Errors_Messages.ALREADY_EXISTS_FAV };
-    }
-
-    this.tracks.push(id);
-    return { message: Errors_Messages.FAV_ADDED }; */
   }
 
   async removeArtist(id: string) {

@@ -40,28 +40,5 @@ export class TrackService {
   async remove(id: string) {
     const track = await this.getOne(id);
     return this.tracksRepository.remove(track);
-    /* const index = this.tracks.findIndex((item) => item.id === id);
-
-    if (index != -1) {
-      return this.tracks.splice(index, 1)[0];
-    }
-
-    throw new NotFoundException(Errors_Messages.TRACK_NOT_FOUND); */
   }
-
-  /* async removeArtist(id: string) {
-    this.tracks.forEach((track) => {
-      if (track.artistId === id) {
-        track.artistId = null;
-      }
-    });
-  }
-
-  async removeAlbum(id: string) {
-    this.tracks.forEach((track) => {
-      if (track.albumId === id) {
-        track.albumId = null;
-      }
-    });
-  } */
 }

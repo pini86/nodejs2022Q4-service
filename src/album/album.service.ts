@@ -46,22 +46,5 @@ export class AlbumService {
   async remove(id: string) {
     const album = await this.getOne(id);
     return this.albumsRepository.remove(album);
-
-    /*  const albumIndex = this.albums.findIndex((item) => item.id === id);
-
-    if (albumIndex === -1) {
-      throw new NotFoundException(Errors_Messages.ALBUM_NOT_FOUND);
-    }
-    await this.trackService.removeAlbum(id);
-
-    return this.albums.splice(albumIndex, 1)[0]; */
   }
-
-  /*  async removeArtist(id: string) {
-    this.albums.forEach((album) => {
-      if (album.artistId === id) {
-        album.artistId = null;
-      }
-    });
-  } */
 }
