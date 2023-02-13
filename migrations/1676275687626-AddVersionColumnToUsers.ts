@@ -1,9 +1,9 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddVersionColumnToUsers1658521097205
+export class AddVersionColumnToUsers1676275687626
   implements MigrationInterface
 {
-  name = 'AddVersionColumnToUsers1658521097205';
+  name = 'AddVersionColumnToUsers11676275687626';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(

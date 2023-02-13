@@ -24,7 +24,9 @@
     "migration:gen": "npm run typeorm migration:generate --",
     "migration:new": "npm run build && npm run typeorm migration:create --",
     "migration:up": "npm run build && npm run typeorm migration:run",
-    "migration:down": "npm run build && npm run typeorm migration:revert"
+    "migration:down": "npm run build && npm run typeorm migration:revert",
+    "scan-node": "docker scan node:pini86_network",
+    "scan-pg": "docker scan postgres:pini86_network"
   },
   "dependencies": {
     "@nestjs/common": "^8.0.0",
