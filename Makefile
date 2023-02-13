@@ -32,6 +32,11 @@ help:
 		@echo "  stop             - stop and remove docker containers"
 		@echo "  test             - run application tests"
 		@echo
+		@echo "Migrations"
+		@echo "  migration        - apply available migrations"
+		@echo "  migration-down   - revert last migration"
+		@echo "  migration-gen NAME=NameForMigration - generate migration"
+		@echo
 		@echo "Cleaning"
 		@echo "  clean            - Warning: stop and remove containers, network, DB data volume"
 		@echo "  fclean           - Warning: clean + remove docker images"
