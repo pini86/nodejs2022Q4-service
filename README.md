@@ -6,7 +6,14 @@
 - Node.js - [Download & Install Node.js](https://nodejs.org/en/download/) and the npm package manager.
 - Docker and Docker compose [Download & install Docker](https://www.docker.com/products/docker-desktop/)
 
-## Downloading
+
+## Docker image pull command
+
+```
+docker pull pini86/nodejs2022q4-service
+```
+
+## Downloading repository
 
 ```
 git clone https://github.com/pini86/nodejs2022Q4-service.git
@@ -21,7 +28,7 @@ git switch docker
 ## Installing NPM modules
 
 ```
-npm install
+npm ci
 ```
 
 ## Set HTTP port value (if necessary)
