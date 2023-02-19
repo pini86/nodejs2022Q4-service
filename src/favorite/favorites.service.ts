@@ -22,16 +22,16 @@ export class FavoritesService {
     private readonly favoritesRepository: Repository<Favorite>,
   ) {}
 
-  async getAll(): Promise<Favorite> {
+  async findAll(): Promise<Favorite> {
     return await this.favoritesRepository.findOneBy({
       id: FAVORITE_TECH_ID,
     });
   }
 
-  async getAllResponse(favs: Favorite): Promise<FavoritesResponse> {
-    const allAlbums = await this.albumService.getAll();
-    const allArtists = await this.artistService.getAll();
-    const allTracks = await this.trackService.getAll();
+  async findAllResponse(favs: Favorite): Promise<FavoritesResponse> {
+    const allAlbums = await this.albumService.findAll();
+    const allArtists = await this.artistService.findAll();
+    const allTracks = await this.trackService.findAll();
 
     const albums = allAlbums.filter((item) => favs.albums.includes(item.id));
     const artists = allArtists.filter((item) => favs.artists.includes(item.id));
@@ -46,8 +46,8 @@ export class FavoritesService {
 
   async addArtist(id: string) {
     try {
-      const artist = await this.artistService.getOne(id);
-      const favorites = await this.getAll();
+      const artist = await this.artistService.findOne(id);
+      const favorites = await this.findAll();
 
       if (!favorites.artists.find((item) => item === id)) {
         favorites.artists.push(artist.id);
@@ -61,8 +61,8 @@ export class FavoritesService {
 
   async addAlbum(id: string) {
     try {
-      const album = await this.albumService.getOne(id);
-      const favorites = await this.getAll();
+      const album = await this.albumService.findOne(id);
+      const favorites = await this.findAll();
 
       if (!favorites.albums.find((item) => item === id)) {
         favorites.albums.push(album.id);
@@ -75,8 +75,8 @@ export class FavoritesService {
 
   async addTrack(id: string) {
     try {
-      const track = await this.trackService.getOne(id);
-      const favorites = await this.getAll();
+      const track = await this.trackService.findOne(id);
+      const favorites = await this.findAll();
 
       if (!favorites.tracks.find((item) => item === id)) {
         favorites.tracks.push(track.id);
@@ -88,7 +88,7 @@ export class FavoritesService {
   }
 
   async removeArtist(id: string) {
-    const favorites = await this.getAll();
+    const favorites = await this.findAll();
     const artistIndex = favorites.artists.findIndex((item) => item === id);
 
     if (artistIndex === -1) {
@@ -100,7 +100,7 @@ export class FavoritesService {
   }
 
   async removeAlbum(id: string) {
-    const favorites = await this.getAll();
+    const favorites = await this.findAll();
     const albumIndex = favorites.albums.findIndex((item) => item === id);
 
     if (albumIndex === -1) {
@@ -112,7 +112,7 @@ export class FavoritesService {
   }
 
   async removeTrack(id: string) {
-    const favorites = await this.getAll();
+    const favorites = await this.findAll();
     const trackIndex = favorites.tracks.findIndex((item) => item === id);
 
     if (trackIndex === -1) {

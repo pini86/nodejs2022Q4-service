@@ -16,9 +16,9 @@ export class FavoritesController {
   constructor(private readonly favoritesService: FavoritesService) {}
 
   @Get()
-  async getAll(): Promise<FavoritesResponse> {
-    const favs = await this.favoritesService.getAll();
-    return this.favoritesService.getAllResponse(favs);
+  async findAll(): Promise<FavoritesResponse> {
+    const favs = await this.favoritesService.findAll();
+    return this.favoritesService.findAllResponse(favs);
   }
 
   @Post('track/:id')

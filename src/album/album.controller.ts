@@ -33,14 +33,14 @@ export class AlbumController {
   }
 
   @Get()
-  async getAll(): Promise<Album[]> {
-    return this.albumService.getAll();
+  async findAll(): Promise<Album[]> {
+    return this.albumService.findAll();
   }
 
   @Get(':id')
-  async getOne(@Param('id') id: string): Promise<Album> {
+  async findOne(@Param('id') id: string): Promise<Album> {
     validateID(id);
-    return this.albumService.getOne(id);
+    return this.albumService.findOne(id);
   }
 
   @Put(':id')

@@ -13,11 +13,11 @@ export class TrackService {
     private readonly tracksRepository: Repository<Track>,
   ) {}
 
-  async getAll() {
+  async findAll() {
     return this.tracksRepository.find();
   }
 
-  async getOne(id: string) {
+  async findOne(id: string) {
     const track = await this.tracksRepository.findOneBy({ id });
 
     if (!track) {
@@ -33,12 +33,12 @@ export class TrackService {
   }
 
   async update(id: string, updateTrackDto: UpdateTrackDto) {
-    const track = Object.assign(await this.getOne(id), updateTrackDto);
+    const track = Object.assign(await this.findOne(id), updateTrackDto);
     return this.tracksRepository.save(track);
   }
 
   async remove(id: string) {
-    const track = await this.getOne(id);
+    const track = await this.findOne(id);
     return this.tracksRepository.remove(track);
   }
 }

@@ -28,14 +28,14 @@ export class TrackController {
   ) {}
 
   @Get()
-  async getAll(): Promise<Track[]> {
-    return this.trackService.getAll();
+  async findAll(): Promise<Track[]> {
+    return this.trackService.findAll();
   }
 
   @Get(':id')
-  async getOne(@Param('id') id: string): Promise<Track> {
+  async findOne(@Param('id') id: string): Promise<Track> {
     validateID(id);
-    return this.trackService.getOne(id);
+    return this.trackService.findOne(id);
   }
 
   @Post()

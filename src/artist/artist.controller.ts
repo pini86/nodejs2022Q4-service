@@ -33,14 +33,14 @@ export class ArtistController {
   }
 
   @Get()
-  async getAll(): Promise<Artist[]> {
-    return this.artistService.getAll();
+  async findAll(): Promise<Artist[]> {
+    return this.artistService.findAll();
   }
 
   @Get(':id')
-  async getOne(@Param('id') id: string): Promise<Artist> {
+  async findOne(@Param('id') id: string): Promise<Artist> {
     validateID(id);
-    return this.artistService.getOne(id);
+    return this.artistService.findOne(id);
   }
 
   @Put(':id')

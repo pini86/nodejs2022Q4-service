@@ -18,11 +18,11 @@ export class ArtistService {
     return this.artistsRepository.save(artist);
   }
 
-  async getAll() {
+  async findAll() {
     return this.artistsRepository.find();
   }
 
-  async getOne(id: string) {
+  async findOne(id: string) {
     const artist = await this.artistsRepository.findOneBy({ id });
     if (!artist) {
       throw new NotFoundException(Errors_Messages.ARTIST_NOT_FOUND);
@@ -31,12 +31,12 @@ export class ArtistService {
   }
 
   async update(id: string, updateArtistDto: UpdateArtistDto) {
-    const artist = Object.assign(await this.getOne(id), updateArtistDto);
+    const artist = Object.assign(await this.findOne(id), updateArtistDto);
     return this.artistsRepository.save(artist);
   }
 
   async remove(id: string) {
-    const artist = await this.getOne(id);
+    const artist = await this.findOne(id);
     return this.artistsRepository.remove(artist);
   }
 }

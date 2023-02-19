@@ -18,11 +18,11 @@ export class UsersService {
     private readonly usersRepository: Repository<User>,
   ) {}
 
-  async getAll() {
+  async findAll() {
     return this.usersRepository.find();
   }
 
-  async getOne(id: string) {
+  async findOne(id: string) {
     const user = await this.usersRepository.findOneBy({ id });
     if (!user) {
       throw new NotFoundException(Errors_Messages.USER_NOT_FOUND);
@@ -40,7 +40,7 @@ export class UsersService {
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
-    const user = await this.getOne(id);
+    const user = await this.findOne(id);
     if (!user) {
       throw new NotFoundException(Errors_Messages.USER_NOT_FOUND);
     }
@@ -56,7 +56,7 @@ export class UsersService {
   }
 
   async remove(id: string) {
-    const user = await this.getOne(id);
+    const user = await this.findOne(id);
     return this.usersRepository.remove(user);
   }
 }

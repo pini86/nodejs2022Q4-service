@@ -23,15 +23,15 @@ export class UserController {
 
   @Get()
   @UseInterceptors(ClassSerializerInterceptor)
-  async getAll(): Promise<User[]> {
-    return this.UserService.getAll();
+  async findAll(): Promise<User[]> {
+    return this.UserService.findAll();
   }
 
   @Get(':id')
   @UseInterceptors(ClassSerializerInterceptor)
-  async getOne(@Param('id') id: string): Promise<User> {
+  async findOne(@Param('id') id: string): Promise<User> {
     validateID(id);
-    return this.UserService.getOne(id);
+    return this.UserService.findOne(id);
   }
 
   @Post()

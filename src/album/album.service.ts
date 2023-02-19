@@ -26,11 +26,11 @@ export class AlbumService {
     return this.albumsRepository.save(album);
   }
 
-  async getAll() {
+  async findAll() {
     return this.albumsRepository.find();
   }
 
-  async getOne(id: string) {
+  async findOne(id: string) {
     const album = await this.albumsRepository.findOneBy({ id });
     if (!album) {
       throw new NotFoundException(Errors_Messages.ALBUM_NOT_FOUND);
@@ -39,12 +39,12 @@ export class AlbumService {
   }
 
   async update(id: string, updateAlbumDto: UpdateAlbumDto) {
-    const album = Object.assign(await this.getOne(id), updateAlbumDto);
+    const album = Object.assign(await this.findOne(id), updateAlbumDto);
     return this.albumsRepository.save(album);
   }
 
   async remove(id: string) {
-    const album = await this.getOne(id);
+    const album = await this.findOne(id);
     return this.albumsRepository.remove(album);
   }
 }
