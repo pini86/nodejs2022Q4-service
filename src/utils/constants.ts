@@ -11,6 +11,11 @@ enum Errors_Messages {
   TRACK_NOT_EXISTS = 'Track not exist',
   ARTIST_NOT_FOUND = 'Artist not found',
   ALBUM_NOT_FOUND = 'Album not found',
+  REFRESH_TOKEN_NOT_FOUND = 'No refreshToken in body',
+  UNAUTHORIZED = 'Unauthorized',
+  INVALID_TOKEN = 'Invalid token',
+  TOKEN_EXPIRED = 'Token expired',
+  ERROR_LOGIN_PSW = `Wrong login or password`,
 }
 
 const UUID_VER = 4;

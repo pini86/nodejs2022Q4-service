@@ -9,6 +9,7 @@ import * as jwt from 'jsonwebtoken';
 import { Reflector } from '@nestjs/core';
 import { IS_PUBLIC_KEY } from '../utils/constants';
 import 'dotenv/config';
+import { Errors_Messages } from '../utils/constants';
 
 const { JWT_SECRET_KEY } = process.env;
 
@@ -32,11 +33,17 @@ export class JwtAuthGuard implements CanActivate {
 
     try {
       if (!sessionToken)
-        throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+        throw new HttpException(
+          Errors_Messages.UNAUTHORIZED,
+          HttpStatus.UNAUTHORIZED,
+        );
       jwt.verify(sessionToken, JWT_SECRET_KEY);
       return true;
     } catch (err) {
-      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+      throw new HttpException(
+        Errors_Messages.UNAUTHORIZED,
+        HttpStatus.UNAUTHORIZED,
+      );
     }
   };
 }

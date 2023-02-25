@@ -6,14 +6,10 @@ import { UsersService } from '../user/user.service';
 import { storageRefreshToken } from './storage.refresh-token';
 import 'dotenv/config';
 import { RefreshPayload } from './interfaces/auth.interfaces';
-import { TYPE_REFRESH_TOKEN } from '../utils/constants';
+import { TYPE_REFRESH_TOKEN, Errors_Messages } from '../utils/constants';
 
 const { TOKEN_REFRESH_EXPIRE_TIME, TOKEN_EXPIRE_TIME, JWT_SECRET_KEY } =
   process.env;
-
-const MSG_ERROR_INVALID_TOKEN = 'Invalid token!';
-const MSG_ERROR_TOKEN_EXPIRED = 'Token expired!';
-const MSG_ERROR_LOGIN_PSW = `Login or password isn't correct`;
 
 @Injectable()
 export class AuthService {
@@ -22,50 +18,47 @@ export class AuthService {
   getAccessToken = async (userLogin: string, userPassword: string) => {
     const user = await this.userService.findByLogin(userLogin);
     if (!user) {
-      throw new HttpException(MSG_ERROR_LOGIN_PSW, HttpStatus.FORBIDDEN);
+      throw new HttpException(
+        Errors_Messages.ERROR_LOGIN_PSW,
+        HttpStatus.FORBIDDEN,
+      );
     } else {
       const isPasswordCorrect = await bcrypt.compare(
         userPassword,
         user.password,
       );
       if (!isPasswordCorrect)
-        throw new HttpException(MSG_ERROR_LOGIN_PSW, HttpStatus.FORBIDDEN);
+        throw new HttpException(
+          Errors_Messages.ERROR_LOGIN_PSW,
+          HttpStatus.FORBIDDEN,
+        );
     }
 
     const { id, login } = user;
     const accessToken = jwt.sign(
       { userId: id, login },
       <jwt.Secret>JWT_SECRET_KEY,
-      {
-        expiresIn: TOKEN_EXPIRE_TIME,
-      },
+      { expiresIn: TOKEN_EXPIRE_TIME },
     );
-    const answer = {
-      id,
-      accessToken,
-    };
-    return answer;
+    return { id, accessToken };
   };
 
   getAccessTokenByUserId = async (userId: string) => {
     const user = await this.userService.findOne(userId);
     if (!user) {
-      throw new HttpException(MSG_ERROR_LOGIN_PSW, HttpStatus.FORBIDDEN);
+      throw new HttpException(
+        Errors_Messages.ERROR_LOGIN_PSW,
+        HttpStatus.FORBIDDEN,
+      );
     }
 
     const { id, login } = user;
     const accessToken = jwt.sign(
       { userId: id, login },
       <jwt.Secret>JWT_SECRET_KEY,
-      {
-        expiresIn: TOKEN_EXPIRE_TIME,
-      },
+      { expiresIn: TOKEN_EXPIRE_TIME },
     );
-    const answer = {
-      id,
-      accessToken,
-    };
-    return answer;
+    return { id, accessToken };
   };
 
   getRefreshToken = async () => {
@@ -73,29 +66,41 @@ export class AuthService {
     const token = jwt.sign(payload, <jwt.Secret>JWT_SECRET_KEY, {
       expiresIn: TOKEN_REFRESH_EXPIRE_TIME,
     });
-    return {
-      id: payload.id,
-      token,
-    };
+    return { id: payload.id, token };
   };
 
   checkRefreshToken = async (token: string) => {
     try {
       const payload = jwt.verify(token, JWT_SECRET_KEY) as RefreshPayload;
       if (!payload.type) {
-        throw new HttpException(MSG_ERROR_INVALID_TOKEN, HttpStatus.FORBIDDEN);
+        throw new HttpException(
+          Errors_Messages.INVALID_TOKEN,
+          HttpStatus.FORBIDDEN,
+        );
       } else if (payload.type !== TYPE_REFRESH_TOKEN) {
-        throw new HttpException(MSG_ERROR_INVALID_TOKEN, HttpStatus.FORBIDDEN);
+        throw new HttpException(
+          Errors_Messages.INVALID_TOKEN,
+          HttpStatus.FORBIDDEN,
+        );
       } else if (storageRefreshToken.refreshTokenId !== payload.id) {
-        throw new HttpException(MSG_ERROR_INVALID_TOKEN, HttpStatus.FORBIDDEN);
+        throw new HttpException(
+          Errors_Messages.INVALID_TOKEN,
+          HttpStatus.FORBIDDEN,
+        );
       } else if (storageRefreshToken.refreshTokenId == payload.id) {
         return storageRefreshToken.userId;
       }
     } catch (error) {
       if (error instanceof jwt.TokenExpiredError) {
-        throw new HttpException(MSG_ERROR_TOKEN_EXPIRED, HttpStatus.FORBIDDEN);
+        throw new HttpException(
+          Errors_Messages.TOKEN_EXPIRED,
+          HttpStatus.FORBIDDEN,
+        );
       } else if (error instanceof jwt.JsonWebTokenError) {
-        throw new HttpException(MSG_ERROR_INVALID_TOKEN, HttpStatus.FORBIDDEN);
+        throw new HttpException(
+          Errors_Messages.INVALID_TOKEN,
+          HttpStatus.FORBIDDEN,
+        );
       } else {
         throw error;
       }

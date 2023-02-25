@@ -12,6 +12,7 @@ import { UsersService } from 'src/user/user.service';
 import { AuthService } from './auth.service';
 import { LoginPasswordDto } from './dto/login-password.dto';
 import { IAuthAnswer } from './interfaces/auth.interfaces';
+import { Errors_Messages } from '../utils/constants';
 
 @Controller('auth')
 export class AuthController {
@@ -50,7 +51,7 @@ export class AuthController {
 
     if (!refreshToken) {
       throw new HttpException(
-        'No refreshToken in body',
+        Errors_Messages.REFRESH_TOKEN_NOT_FOUND,
         HttpStatus.UNAUTHORIZED,
       );
     }
