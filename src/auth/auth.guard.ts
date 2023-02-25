@@ -1,4 +1,3 @@
-import * as dotenv from 'dotenv';
 import {
   CanActivate,
   ExecutionContext,
@@ -8,9 +7,8 @@ import {
 } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
 import { Reflector } from '@nestjs/core';
-import { IS_PUBLIC_KEY } from 'src/public';
-
-dotenv.config();
+import { IS_PUBLIC_KEY } from '../utils/constants';
+import 'dotenv/config';
 
 const { JWT_SECRET_KEY } = process.env;
 
@@ -24,7 +22,6 @@ export class JwtAuthGuard implements CanActivate {
       context.getClass(),
     ]);
 
-    console.log('isPublic ', isPublic);
     if (isPublic) {
       return true;
     }
@@ -33,7 +30,6 @@ export class JwtAuthGuard implements CanActivate {
 
     const sessionToken = request.headers.authorization?.split(' ')[1];
 
-    console.log('sessionToken   ', sessionToken);
     try {
       if (!sessionToken)
         throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);

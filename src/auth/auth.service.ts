@@ -1,4 +1,3 @@
-//import * as dotenv from 'dotenv';
 import { v4 as uuid } from 'uuid';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
@@ -6,14 +5,12 @@ import * as bcrypt from 'bcrypt';
 import { UsersService } from '../user/user.service';
 import { storageRefreshToken } from './storage.refresh-token';
 import 'dotenv/config';
-//const PORT = process.env.PORT || 4000;
-//dotenv.config();
+import { RefreshPayload } from './interfaces/auth.interfaces';
+import { TYPE_REFRESH_TOKEN } from '../utils/constants';
 
 const { TOKEN_REFRESH_EXPIRE_TIME, TOKEN_EXPIRE_TIME, JWT_SECRET_KEY } =
   process.env;
 
-type RefreshPayload = { id: string; type: string };
-const TYPE_REFRESH_TOKEN = 'refresh';
 const MSG_ERROR_INVALID_TOKEN = 'Invalid token!';
 const MSG_ERROR_TOKEN_EXPIRED = 'Token expired!';
 const MSG_ERROR_LOGIN_PSW = `Login or password isn't correct`;
@@ -24,14 +21,6 @@ export class AuthService {
 
   getAccessToken = async (userLogin: string, userPassword: string) => {
     const user = await this.userService.findByLogin(userLogin);
-    console.log(
-      'userLogin ',
-      userLogin,
-      ' user',
-      user,
-      'userPassword saved',
-      userPassword,
-    );
     if (!user) {
       throw new HttpException(MSG_ERROR_LOGIN_PSW, HttpStatus.FORBIDDEN);
     } else {
@@ -39,7 +28,6 @@ export class AuthService {
         userPassword,
         user.password,
       );
-      console.log('isPasswordCorrect ', isPasswordCorrect);
       if (!isPasswordCorrect)
         throw new HttpException(MSG_ERROR_LOGIN_PSW, HttpStatus.FORBIDDEN);
     }

@@ -17,4 +17,14 @@ const UUID_VER = 4;
 
 const FAVORITE_TECH_ID = 'e335ad78-2372-4500-af32-b363ba5ae713';
 
-export { Errors_Messages, UUID_VER, FAVORITE_TECH_ID };
+const IS_PUBLIC_KEY = 'isPublic';
+
+const TYPE_REFRESH_TOKEN = 'refresh';
+
+export {
+  Errors_Messages,
+  UUID_VER,
+  FAVORITE_TECH_ID,
+  IS_PUBLIC_KEY,
+  TYPE_REFRESH_TOKEN,
+};

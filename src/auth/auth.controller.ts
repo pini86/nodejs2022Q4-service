@@ -7,12 +7,11 @@ import {
   Post,
 } from '@nestjs/common';
 import { StatusCodes } from 'http-status-codes';
-import { Public } from 'src/public';
-//import { UserEntity } from 'src/user/entities/user.entity';
+import { Public } from 'src/utils/public';
 import { UsersService } from 'src/user/user.service';
 import { AuthService } from './auth.service';
 import { LoginPasswordDto } from './dto/login-password.dto';
-import { IAuthAnswer } from './interfaces/auth-answer.interface';
+import { IAuthAnswer } from './interfaces/auth.interfaces';
 
 @Controller('auth')
 export class AuthController {
