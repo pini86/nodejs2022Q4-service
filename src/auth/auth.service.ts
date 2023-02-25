@@ -7,6 +7,8 @@ import { storageRefreshToken } from './storage.refresh-token';
 import 'dotenv/config';
 import { RefreshPayload } from './interfaces/auth.interfaces';
 import { TYPE_REFRESH_TOKEN, Errors_Messages } from '../utils/constants';
+import { LoginPasswordDto } from './dto/login-password.dto';
+import { IAuthAnswer } from './interfaces/auth.interfaces';
 
 const { TOKEN_REFRESH_EXPIRE_TIME, TOKEN_EXPIRE_TIME, JWT_SECRET_KEY } =
   process.env;
@@ -15,7 +17,40 @@ const { TOKEN_REFRESH_EXPIRE_TIME, TOKEN_EXPIRE_TIME, JWT_SECRET_KEY } =
 export class AuthService {
   constructor(private userService: UsersService) {}
 
-  getAccessToken = async (userLogin: string, userPassword: string) => {
+  async login(loginPasswordDto: LoginPasswordDto) {
+    const { login, password } = loginPasswordDto;
+    const accessToken = await this.getAccessToken(login, password);
+    const refreshToken = await this.getRefreshToken();
+    const authAnswer: IAuthAnswer = {
+      accessToken: accessToken.accessToken,
+      refreshToken: refreshToken.token,
+    };
+    await this.saveRefreshToken(refreshToken.id, accessToken.id);
+    return authAnswer;
+  }
+
+  async refresh(bodyRefreshToken: { refreshToken: string }) {
+    const { refreshToken } = bodyRefreshToken;
+
+    if (!refreshToken) {
+      throw new HttpException(
+        Errors_Messages.REFRESH_TOKEN_NOT_FOUND,
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
+    const userId = await this.checkRefreshToken(refreshToken);
+    const accessToken = await this.getAccessTokenByUserId(userId);
+    const newRefreshToken = await this.getRefreshToken();
+    const authAnswer: IAuthAnswer = {
+      accessToken: accessToken.accessToken,
+      refreshToken: newRefreshToken.token,
+    };
+    await this.saveRefreshToken(newRefreshToken.id, accessToken.id);
+    return authAnswer;
+  }
+
+  private async getAccessToken(userLogin: string, userPassword: string) {
     const user = await this.userService.findByLogin(userLogin);
     if (!user) {
       throw new HttpException(
@@ -41,9 +76,9 @@ export class AuthService {
       { expiresIn: TOKEN_EXPIRE_TIME },
     );
     return { id, accessToken };
-  };
+  }
 
-  getAccessTokenByUserId = async (userId: string) => {
+  private async getAccessTokenByUserId(userId: string) {
     const user = await this.userService.findOne(userId);
     if (!user) {
       throw new HttpException(
@@ -59,17 +94,17 @@ export class AuthService {
       { expiresIn: TOKEN_EXPIRE_TIME },
     );
     return { id, accessToken };
-  };
+  }
 
-  getRefreshToken = async () => {
+  private async getRefreshToken() {
     const payload: RefreshPayload = { id: uuid(), type: TYPE_REFRESH_TOKEN };
     const token = jwt.sign(payload, <jwt.Secret>JWT_SECRET_KEY, {
       expiresIn: TOKEN_REFRESH_EXPIRE_TIME,
     });
     return { id: payload.id, token };
-  };
+  }
 
-  checkRefreshToken = async (token: string) => {
+  private async checkRefreshToken(token: string) {
     try {
       const payload = jwt.verify(token, JWT_SECRET_KEY) as RefreshPayload;
       if (!payload.type) {
@@ -105,10 +140,10 @@ export class AuthService {
         throw error;
       }
     }
-  };
+  }
 
-  saveRefreshToken = async (tokenId: string, userId: string) => {
+  private async saveRefreshToken(tokenId: string, userId: string) {
     storageRefreshToken.refreshTokenId = tokenId;
     storageRefreshToken.userId = userId;
-  };
+  }
 }
