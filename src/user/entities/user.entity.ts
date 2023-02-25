@@ -1,15 +1,24 @@
-import { Exclude } from 'class-transformer';
+import * as dotenv from 'dotenv';
+import * as bcrypt from 'bcrypt';
 import {
-  Column,
-  CreateDateColumn,
   Entity,
+  Column,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
   VersionColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  BeforeInsert,
+  BeforeUpdate,
 } from 'typeorm';
 
-@Entity('users')
-export class User {
+import { User } from '../interfaces/user.interface';
+
+dotenv.config();
+
+const { CRYPT_SALT } = process.env;
+
+@Entity('user')
+export class UserEntity implements User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -17,29 +26,38 @@ export class User {
   login: string;
 
   @Column()
-  @Exclude()
   password: string;
 
   @VersionColumn()
   version: number;
 
   @CreateDateColumn({
-    transformer: {
-      from: (value) => value.getTime(),
-      to: (value) => value,
-    },
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
   })
   createdAt: number;
 
   @UpdateDateColumn({
-    transformer: {
-      from: (value) => value.getTime(),
-      to: (value) => value,
-    },
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+    onUpdate: 'CURRENT_TIMESTAMP(6)',
   })
   updatedAt: number;
 
-  constructor(partial: Partial<User>) {
-    Object.assign(this, partial);
+  @BeforeInsert()
+  @BeforeUpdate()
+  async generatePasswordHash() {
+    this.password = await bcrypt.hash(this.password, Number(CRYPT_SALT));
+  }
+
+  static toResponse(user: UserEntity): {
+    id: string;
+    login: string;
+    version: number;
+    createdAt: number;
+    updatedAt: number;
+  } {
+    const { id, login, version, createdAt, updatedAt } = user;
+    return { id, login, version, createdAt, updatedAt };
   }
 }

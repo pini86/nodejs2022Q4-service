@@ -3,54 +3,57 @@ import {
   Controller,
   Delete,
   Get,
-  HttpCode,
-  HttpStatus,
+  NotFoundException,
   Param,
   Post,
   Put,
-  UseInterceptors,
-  ClassSerializerInterceptor,
+  ParseUUIDPipe,
+  HttpCode,
 } from '@nestjs/common';
-import { User } from './entities/user.entity';
+import { UserEntity } from './entities/user.entity';
 import { UsersService } from './user.service';
-import { validateID } from '../utils/validate';
+import { UpdatePasswordDto } from './dto/update-user.dto';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { StatusCodes } from 'http-status-codes';
 
 @Controller('user')
-export class UserController {
-  constructor(private readonly UserService: UsersService) {}
-
+export class UsersController {
+  constructor(private readonly usersService: UsersService) {}
   @Get()
-  @UseInterceptors(ClassSerializerInterceptor)
-  async findAll(): Promise<User[]> {
-    return this.UserService.findAll();
+  async findAll() {
+    const users = await this.usersService.findAll();
+    return users.map(UserEntity.toResponse);
   }
 
   @Get(':id')
-  @UseInterceptors(ClassSerializerInterceptor)
-  async findOne(@Param('id') id: string): Promise<User> {
-    validateID(id);
-    return this.UserService.findOne(id);
+  async findOne(@Param('id', new ParseUUIDPipe()) id: string) {
+    const user = await this.usersService.findOne(id);
+    if (user) return UserEntity.toResponse(user);
+    throw new NotFoundException();
   }
 
   @Post()
-  @UseInterceptors(ClassSerializerInterceptor)
-  async create(@Body() createUserDto: CreateUserDto): Promise<User> {
-    return this.UserService.create(createUserDto);
+  async create(@Body() userDto: CreateUserDto) {
+    const user = await this.usersService.create(userDto);
+    return UserEntity.toResponse(user);
   }
 
   @Put(':id')
-  @UseInterceptors(ClassSerializerInterceptor)
-  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    validateID(id);
-    return this.UserService.update(id, updateUserDto);
+  async update(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() updatePasswordDto: UpdatePasswordDto,
+  ) {
+    const user = await this.usersService.update(id, updatePasswordDto);
+    if (user) return UserEntity.toResponse(user);
+    throw new NotFoundException();
   }
 
   @Delete(':id')
-  @HttpCode(HttpStatus.NO_CONTENT)
-  async remove(@Param('id') id: string) {
-    validateID(id);
-    await this.UserService.remove(id);
+  @HttpCode(StatusCodes.NO_CONTENT)
+  async remove(@Param('id', new ParseUUIDPipe()) id: string) {
+    const isDeleted = await this.usersService.remove(id);
+    if (!isDeleted) {
+      throw new NotFoundException();
+    }
   }
 }

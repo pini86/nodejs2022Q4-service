@@ -1,62 +1,61 @@
-import {
-  ConflictException,
-  ForbiddenException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
+
 import { CreateUserDto } from './dto/create-user.dto';
-import { User } from './entities/user.entity';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { Errors_Messages } from '../utils/constants';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { UpdatePasswordDto } from './dto/update-user.dto';
+import { UserEntity } from './entities/user.entity';
+import { UsersStore } from './interfaces/user-storage.interface';
 
 @Injectable()
 export class UsersService {
-  constructor(
-    @InjectRepository(User)
-    private readonly usersRepository: Repository<User>,
-  ) {}
+  constructor(@Inject('UsersStore') private storage: UsersStore) {}
 
-  async findAll() {
-    return this.usersRepository.find();
+  async create(createUserDto: CreateUserDto) {
+    const createdUser = await this.storage.create(createUserDto);
+    if (createdUser) {
+      return this.dateToNumber(createdUser);
+    } else return createdUser;
   }
 
-  async findOne(id: string) {
-    const user = await this.usersRepository.findOneBy({ id });
-    if (!user) {
-      throw new NotFoundException(Errors_Messages.USER_NOT_FOUND);
-    }
+  findAll() {
+    return this.storage.getAll();
+  }
 
+  findOne(id: string) {
+    return this.storage.getById(id);
+  }
+
+  async update(id: string, updateUserDto: UpdatePasswordDto) {
+    const updatedUser = await this.storage.update(id, updateUserDto);
+    if (updatedUser) {
+      return this.dateToNumber(updatedUser);
+    } else return updatedUser;
+  }
+
+  remove(id: string) {
+    return this.storage.remove(id);
+  }
+
+  private dateToNumber(user: UserEntity): UserEntity {
+    user.createdAt = +user.createdAt;
+    user.updatedAt = +user.updatedAt;
     return user;
   }
 
-  async create(createUserDto: CreateUserDto) {
-    if (await this.usersRepository.findOneBy({ login: createUserDto.login })) {
-      throw new ConflictException(Errors_Messages.USER_EXISTS);
-    }
-    const user = this.usersRepository.create(createUserDto);
-    return this.usersRepository.save(user);
-  }
+  findByLoginPassword = async (
+    login: string,
+    password: string,
+  ): Promise<UserEntity | null> => {
+    const user = await this.storage.getByLogin(login);
+    if (!user) return null;
+    const passwordVerification = await bcrypt.compare(password, user.password);
+    if (!passwordVerification) return null;
+    return user;
+  };
 
-  async update(id: string, updateUserDto: UpdateUserDto) {
-    const user = await this.findOne(id);
-    if (!user) {
-      throw new NotFoundException(Errors_Messages.USER_NOT_FOUND);
-    }
-
-    const { oldPassword, newPassword } = updateUserDto;
-
-    if (user.password !== oldPassword) {
-      throw new ForbiddenException(Errors_Messages.WRONG_PASSWORD);
-    }
-
-    user.password = newPassword;
-    return this.usersRepository.save(user);
-  }
-
-  async remove(id: string) {
-    const user = await this.findOne(id);
-    return this.usersRepository.remove(user);
-  }
+  findByLogin = async (login: string): Promise<UserEntity | null> => {
+    const user = await this.storage.getByLogin(login);
+    if (!user) return null;
+    return user;
+  };
 }
