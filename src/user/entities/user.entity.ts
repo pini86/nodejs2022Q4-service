@@ -1,4 +1,3 @@
-import * as dotenv from 'dotenv';
 import * as bcrypt from 'bcrypt';
 import {
   Entity,
@@ -10,10 +9,8 @@ import {
   BeforeInsert,
   BeforeUpdate,
 } from 'typeorm';
-
 import { User } from '../interfaces/user.interface';
-
-dotenv.config();
+import 'dotenv/config';
 
 const { CRYPT_SALT } = process.env;
 

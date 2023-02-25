@@ -1,14 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
-import * as bcrypt from 'bcrypt';
-
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-user.dto';
 import { UserEntity } from './entities/user.entity';
-import { UsersStore } from './interfaces/user-storage.interface';
+import { RepositoryUsersStorage } from './store/repository.users.storage';
 
 @Injectable()
 export class UsersService {
-  constructor(@Inject('UsersStore') private storage: UsersStore) {}
+  constructor(@Inject('UsersStore') private storage: RepositoryUsersStorage) {}
 
   async create(createUserDto: CreateUserDto) {
     const createdUser = await this.storage.create(createUserDto);
@@ -17,11 +15,11 @@ export class UsersService {
     } else return createdUser;
   }
 
-  findAll() {
+  async findAll() {
     return this.storage.getAll();
   }
 
-  findOne(id: string) {
+  async findOne(id: string) {
     return this.storage.getById(id);
   }
 
@@ -32,7 +30,7 @@ export class UsersService {
     } else return updatedUser;
   }
 
-  remove(id: string) {
+  async remove(id: string) {
     return this.storage.remove(id);
   }
 
@@ -42,20 +40,9 @@ export class UsersService {
     return user;
   }
 
-  findByLoginPassword = async (
-    login: string,
-    password: string,
-  ): Promise<UserEntity | null> => {
-    const user = await this.storage.getByLogin(login);
-    if (!user) return null;
-    const passwordVerification = await bcrypt.compare(password, user.password);
-    if (!passwordVerification) return null;
-    return user;
-  };
-
-  findByLogin = async (login: string): Promise<UserEntity | null> => {
+  async findByLogin(login: string): Promise<UserEntity | null> {
     const user = await this.storage.getByLogin(login);
     if (!user) return null;
     return user;
-  };
+  }
 }

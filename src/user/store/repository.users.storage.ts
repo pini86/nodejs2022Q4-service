@@ -5,30 +5,29 @@ import { Repository } from 'typeorm';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdatePasswordDto } from '../dto/update-user.dto';
 import { UserEntity } from '../entities/user.entity';
-import { UsersStore } from '../interfaces/user-storage.interface';
 
 @Injectable()
-export class RepositoryUsersStorage implements UsersStore {
+export class RepositoryUsersStorage {
   constructor(
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
   ) {}
 
-  getAll = async (): Promise<UserEntity[]> => {
+  async getAll(): Promise<UserEntity[]> {
     return this.userRepository.find();
-  };
+  }
 
-  getById = async (userId: string): Promise<UserEntity> => {
-    const user = this.userRepository.findOne({ where: { id: userId } });
+  async getById(userId: string): Promise<UserEntity> {
+    const user = this.userRepository.findOneBy({ id: userId });
     return user;
-  };
+  }
 
-  getByLogin = async (userLogin: string): Promise<UserEntity | null> => {
-    const user = this.userRepository.findOne({ where: { login: userLogin } });
+  async getByLogin(userLogin: string): Promise<UserEntity | null> {
+    const user = this.userRepository.findOneBy({ login: userLogin });
     return user;
-  };
+  }
 
-  update = async (id: string, dto: UpdatePasswordDto): Promise<UserEntity> => {
+  async update(id: string, dto: UpdatePasswordDto): Promise<UserEntity> {
     const user = await this.getById(id);
     if (user) {
       const isPasswordCorrect = await bcrypt.compare(
@@ -43,18 +42,18 @@ export class RepositoryUsersStorage implements UsersStore {
         throw new ForbiddenException();
       }
     }
-  };
+  }
 
-  create = async (dto: CreateUserDto): Promise<UserEntity> => {
+  async create(dto: CreateUserDto): Promise<UserEntity> {
     const createdUser = this.userRepository.create(dto);
-    const savedUser = this.userRepository.save(createdUser);
+    const savedUser = await this.userRepository.save(createdUser);
     return savedUser;
-  };
+  }
 
-  remove = async (id: string): Promise<boolean> => {
+  async remove(id: string): Promise<boolean> {
     const deletionRes = await this.userRepository.delete(id);
     if (deletionRes.affected === 0) {
       return false;
     } else return true;
-  };
+  }
 }
