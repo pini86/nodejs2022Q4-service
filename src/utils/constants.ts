@@ -26,10 +26,13 @@ const IS_PUBLIC_KEY = 'isPublic';
 
 const TYPE_REFRESH_TOKEN = 'refresh';
 
+const ONE_kb = 1024;
+
 export {
   Errors_Messages,
   UUID_VER,
   FAVORITE_TECH_ID,
   IS_PUBLIC_KEY,
   TYPE_REFRESH_TOKEN,
+  ONE_kb,
 };
