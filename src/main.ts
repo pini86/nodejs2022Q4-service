@@ -28,6 +28,17 @@ async function bootstrap() {
   const logger = new LoggingService();
   app.useGlobalFilters(new HttpExceptionFilter(logger));
 
+  process.on('uncaughtException', (error) => {
+    process.stderr.write(`The Uncaught Exception : ${error}`);
+    this.logger.error(`The Uncaught Exception : ${error.message}.`);
+    process.exit(1);
+  });
+
+  process.on('unhandledRejection', (reason) => {
+    this.logger.error(`The Unhandled Rejection : ${reason}.`);
+    process.stderr.write(`The Unhandled Rejection : ${reason}`);
+  });
+
   await app.listen(PORT, () => console.log(`Server works on port ${PORT}`));
 }
 bootstrap();
