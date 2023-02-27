@@ -19,10 +19,10 @@ docker pull pini86/nodejs2022q4-service
 git clone https://github.com/pini86/nodejs2022Q4-service.git
 ```
 
-## Switch to 'docker' branch
+## Switch to 'auth' branch
 
 ```
-git switch docker
+git switch auth
 ```
 
 ## Installing NPM modules
@@ -34,7 +34,7 @@ npm ci
 ## Set HTTP port value (if necessary)
 
 ```
-Rename '.env.example' to '.env' and set new value of PORT (4000 as default)
+Rename '.env.example' to '.env' and set new value of PORT (4000 as default), level of Logging (default 2 : ['log', 'error'])
 ```
 
 ## Running application
@@ -67,16 +67,10 @@ in browser OpenAPI/Swagger documentation by route http://localhost:4000/doc/.
 
 After application running open new terminal and enter:
 
-To run all tests
+To run all tests with authorization
 
 ```
-docker-compose exec node npm run test
-```
-
-To run only one of all test suites
-
-```
-docker-compose exec node npm run test -- <path to suite>
+docker-compose exec node npm run test:auth
 ```
 
 ## Auto-fix and format
